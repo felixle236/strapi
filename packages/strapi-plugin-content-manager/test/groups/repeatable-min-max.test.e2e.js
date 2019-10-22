@@ -6,17 +6,17 @@ let modelsUtils;
 let rq;
 
 describe.each([
-  ['CONTENT MANAGER', '/content-manager/explorer/withgroup'],
-  ['GENERATED API', '/withgroups'],
-])('[%s] => Non repeatable and Not required group', (_, path) => {
+  ['CONTENT MANAGER', '/content-manager/explorer/withcomponent'],
+  ['GENERATED API', '/withcomponents'],
+])('[%s] => Non repeatable and Not required component', (_, path) => {
   beforeAll(async () => {
     const token = await registerAndLogin();
     const authRq = createAuthRequest(token);
 
     modelsUtils = createModelsUtils({ rq: authRq });
 
-    await modelsUtils.createGroup({
-      name: 'somegroup',
+    await modelsUtils.createComponent({
+      name: 'somecomponent',
       attributes: {
         name: {
           type: 'string',
@@ -24,8 +24,8 @@ describe.each([
       },
     });
 
-    await modelsUtils.createModelWithType('withgroup', 'group', {
-      group: 'somegroup',
+    await modelsUtils.createModelWithType('withcomponent', 'component', {
+      component: 'somecomponent',
       repeatable: true,
       required: false,
       min: 1,
@@ -38,8 +38,8 @@ describe.each([
   }, 60000);
 
   afterAll(async () => {
-    await modelsUtils.deleteGroup('somegroup');
-    await modelsUtils.deleteModel('withgroup');
+    await modelsUtils.deleteComponent('somecomponent');
+    await modelsUtils.deleteModel('withcomponent');
   }, 60000);
 
   describe('POST new entry', () => {
@@ -143,7 +143,7 @@ describe.each([
       expect(res.statusCode).toBe(400);
     });
 
-    test('Can send input without the group field', async () => {
+    test('Can send input without the component field', async () => {
       const res = await rq.post('/', {
         body: {},
       });
@@ -180,7 +180,7 @@ describe.each([
       });
     });
 
-    test('Should return entries with their nested groups', async () => {
+    test('Should return entries with their nested components', async () => {
       const res = await rq.get('/');
 
       expect(res.statusCode).toBe(200);
@@ -291,7 +291,7 @@ describe.each([
       });
     });
 
-    test('Keeps the previous value if group not sent', async () => {
+    test('Keeps the previous value if component not sent', async () => {
       const res = await rq.post('/', {
         body: {
           field: [
@@ -393,7 +393,7 @@ describe.each([
       expect(getRes.body).toMatchObject(res.body);
     });
 
-    test('Replaces the previous groups if sent without id', async () => {
+    test('Replaces the previous components if sent without id', async () => {
       const res = await rq.post('/', {
         body: {
           field: [
@@ -443,7 +443,7 @@ describe.each([
       });
     });
 
-    test('Throws on invalid id in group', async () => {
+    test('Throws on invalid id in component', async () => {
       const res = await rq.post('/', {
         body: {
           field: [
@@ -468,7 +468,7 @@ describe.each([
       expect(updateRes.statusCode).toBe(400);
     });
 
-    test('Updates group with ids, create new ones and removes old ones', async () => {
+    test('Updates component with ids, create new ones and removes old ones', async () => {
       const res = await rq.post('/', {
         body: {
           field: [
@@ -489,7 +489,7 @@ describe.each([
         body: {
           field: [
             {
-              id: res.body.field[0].id, // send old id to update the previous group
+              id: res.body.field[0].id, // send old id to update the previous component
               name: 'newOne',
             },
             {
@@ -537,7 +537,7 @@ describe.each([
   });
 
   describe('DELETE entry', () => {
-    test('Returns entry with groups', async () => {
+    test('Returns entry with components', async () => {
       const res = await rq.post('/', {
         body: {
           field: [
